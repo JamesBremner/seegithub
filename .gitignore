@@ -26,3 +26,8 @@
 *.exe
 *.out
 *.app
+
+sqlite3.c
+sqlite3.h
+raven_sqlite.cpp
+raven_sqlite.h
