@@ -2,6 +2,7 @@
 #include <fstream>
 #include "curl/curl.h"
 #include "raven_sqlite.h"
+#include "json.h"
 
 using namespace std;
 
@@ -18,6 +19,26 @@ string getUserPswd()
     return db.myResultA[0];
 
 
+}
+
+void WriteIssuesToDB( const char* j )
+{
+    json::Array root = json::Deserialize( std::string( j ) );
+//    if (root.GetType() == json::NULLVal)
+//    {
+//        cout << "invalid JSON\n";
+//             exit(1);
+//    }
+    cout << root.size() << " issues\n";
+
+    raven::sqlite::cDB db(L"seegithub_teleIMRI.db");
+
+    for( auto& i : root )
+    {
+        cout << (int)i["number"] << " " << i["title"].ToString() << "\n";
+        db.Query("INSERT INTO issue VALUES ( %d, '%s' ); ",
+                (int)i["number"], i["title"].ToString().c_str()  );
+    }
 }
 
 struct MemoryStruct
@@ -86,10 +107,12 @@ int main()
     curl_easy_cleanup(curl);
 
 
-    cout << chunk.memory << endl;
+    //cout << chunk.memory << endl;
     ofstream of("test.txt");
     of << chunk.memory;
     of.close();
+
+    WriteIssuesToDB( chunk.memory );
 
     return 0;
 }

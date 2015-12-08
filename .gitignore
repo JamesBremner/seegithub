@@ -31,3 +31,10 @@ sqlite3.c
 sqlite3.h
 raven_sqlite.cpp
 raven_sqlite.h
+
+sqlite3.c
+json.cpp
+json.h
+*.depend
+*.db
+test.txt
